@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/FelixKnutsen/funtemps/conv"
 )
 
 // Definerer flag-variablene i hoved-"scope"
@@ -70,7 +71,7 @@ func main() {
 	if out == "C" && isFlagPassed("F") {
 		// Kalle opp funksjonen FahrenheitToCelsius(fahr), som da
 		// skal returnere °C
-		fmt.Println("0°F er -17.78°C")
+		conv.fahrenheitToCelsius(fahr)
 	}
 
 }
