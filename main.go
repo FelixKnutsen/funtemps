@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"github.com/FelixKnutsen/funtemps/conv"
 )
 
@@ -11,30 +12,17 @@ var fahr float64
 var cels float64
 var kelv float64
 var out string
-var funfacts string
 
 // Bruker init (som anbefalt i dokumentasjonen) for å sikre at flagvariablene
 // er initialisert.
 func init() {
-
-	/*
-	   Her er eksempler på hvordan man implementerer parsing av flagg.
-	   For eksempel, kommando
-	       funtemps -F 0 -out C
-	   skal returnere output: 0°F er -17.78°C
-	*/
 
 	// Definerer og initialiserer flagg-variablene
 	flag.Float64Var(&fahr, "F", 0.0, "temperatur i grader fahrenheit")
 	flag.Float64Var(&cels, "C", 0.0, "temperatur i grader celsius")
 	flag.Float64Var(&kelv, "K", 0.0, "temperatur i grader kelvin")
 
-
-	// Du må selv definere flag-variablene for "C" og "K"
 	flag.StringVar(&out, "out", "C", "beregne temperatur i C - celsius, F - farhenheit, K- Kelvin")
-	flag.StringVar(&funfacts, "funfacts", "sun", "\"fun-facts\" om sun - Solen, luna - Månen og terra - Jorden")
-	// Du må selv definere flag-variabelen for -t flagget, som bestemmer
-	// hvilken temperaturskala skal brukes når funfacts skal vises
 
 }
 
@@ -42,15 +30,16 @@ func main() {
 
 	flag.Parse()
 
-	// Her er noen eksempler du kan bruke i den manuelle testingen
-	fmt.Println(fahr, out, funfacts)
+	if flag.NFlag() == 0 {
+		fmt.Println("Bruk følgene oppsett for å bruke koden:")
+		fmt.Println("-*enhetskode* *temperatur* -out *enhetskode*")
+		fmt.Println("eksempel: -F 32 -out C")
+		fmt.Println("du vil da få 32 farenheit ut i celcius")
+		fmt.Println("NB! C, F eller K MÅ ha store bokstaver")
+		return
+	}
 
-	fmt.Println("len(flag.Args())", len(flag.Args()))
-	fmt.Println("flag.NFlag()", flag.NFlag())
-
-	fmt.Println(isFlagPassed("out"))
-
-	// Eksempel på enkel logikk
+	// input output koden som kjøres til conv
 	if out == "C" && isFlagPassed("F") {
 		fmt.Println(conv.FahrenheitToCelsius(fahr))
 	}
@@ -75,11 +64,10 @@ func main() {
 		fmt.Println(conv.FahrenheitToKelvin(fahr))
 	}
 
-
 }
 
 // Funksjonen sjekker om flagget er spesifisert på kommandolinje
-// Du trenger ikke å bruke den, men den kan hjelpe med logikken
+// * Du trenger ikke å bruke den, men den kan hjelpe med logikken
 func isFlagPassed(name string) bool {
 	found := false
 	flag.Visit(func(f *flag.Flag) {
